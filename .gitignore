@@ -1,0 +1,23 @@
+# Recorded data and local credentials -- never publish a lab's episodes or tokens.
+/samples/
+/recordings/
+/datahive-config/
+
+# Catkin build outputs (only appear if someone builds outside the container)
+/ros/**/build/
+/ros/**/devel/
+/ros/**/install/
+/ros/**/logs/
+/.catkin_tools/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# Local editor and OS files
+.idea/
+.vscode/
+.DS_Store
+*~

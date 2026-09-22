@@ -1,0 +1,65 @@
+# DataHive robot profile for a Franka Research 3. Copied to samples/robot_profile.yaml by
+# `make profile`; the lines marked EDIT describe YOUR rig and must be checked before collecting.
+robot_name: franka_research_3
+gripper_name: franka_hand
+is_biarm: false
+uses_mobile_base: false
+
+# Recording rate in Hz. DataHive requires >= 100; FrankaState arrives at 1 kHz.
+control_freq: 200
+
+action_space:
+  - cartesian_position
+  - gripper_position
+orientation_representation: quat
+robot_state_orientation_representation: quat
+action_joint_names: []
+gains: null
+intrinsic_calibration_matrix: null
+extrinsic_calibration_matrix: null
+
+manipulator:
+  model: franka_research_3
+  dof: 7
+  joint_names: [fr3_joint1, fr3_joint2, fr3_joint3, fr3_joint4, fr3_joint5, fr3_joint6, fr3_joint7]
+
+end_effector:
+  type: gripper
+  type_description: null
+  actuated_dof: 1
+  command_modality: position
+
+# EDIT: `stock` only if the arm runs a franka_ros controller unmodified. Otherwise set
+# `custom`, fill custom_description, and add controller_type.
+low_level:
+  mode: stock
+  controller_type: franka_ros
+  custom_description: null
+control_mode: cartesian_impedance
+
+# EDIT: who/what drives the arm, e.g. teleop_spacemouse, teleop_joystick, hand_guiding, vla_pi0.
+policy: teleop
+
+# EDIT: names must match --camera NAME:TOPIC in launch/record.launch; all cameras must share
+# resolution and fps. Resolution/fps/encoding are overwritten from the real videos.
+cameras:
+  - {name: front, position: front of the workspace, orientation: facing the board}
+  - {name: top, position: above the workspace, orientation: looking down at the board}
+  - {name: wrist, position: on the gripper, orientation: looking along the fingers}
+
+# EDIT
+board_mounting: horizontal
+hiveboard_version: v2
+board_fabrication:
+  printer: null
+  material: null
+  print_settings: null
+  post_processing: null
+  calibration_notes: null
+
+units_and_frames:
+  joint_position: rad
+  joint_velocity: rad/s
+  joint_torque_or_current: N*m
+  ee_pose: position_m_quaternion_xyzw_in_base_frame
+  timestamp: monotonic_seconds

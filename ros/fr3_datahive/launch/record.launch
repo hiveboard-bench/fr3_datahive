@@ -1,0 +1,20 @@
+<launch>
+  <arg name="mode" default="manual" doc="manual | auto" />
+  <arg name="samples_dir" default="/data/samples" />
+  <arg name="out_dir" default="/data/recordings" doc="manual mode: where the files to upload go" />
+  <arg name="base_url" default="http://127.0.0.1:8000" doc="auto mode: datahive interface URL" />
+  <arg name="front_topic" default="/camera/front/image_raw" />
+  <arg name="top_topic" default="/camera/top/image_raw" />
+  <arg name="wrist_topic" default="/camera/wrist/image_raw" />
+  <arg name="teleop_actions" default="false" />
+  <arg name="extra_args" default="" />
+
+  <arg name="teleop_flag" value="$(eval '--teleop-actions' if str(arg('teleop_actions')).lower() in ('true', '1') else '')" />
+  <arg name="mode_args" value="$(eval '--base-url ' + str(arg('base_url')) if arg('mode') == 'auto' else '--out-dir ' + str(arg('out_dir')))" />
+
+  <node name="datahive_record" pkg="fr3_datahive" type="record.py" output="screen" required="true"
+        launch-prefix="/opt/datahive-venv/bin/python"
+        args="$(arg mode) --samples-dir $(arg samples_dir) $(arg mode_args)
+              --camera front:$(arg front_topic) --camera top:$(arg top_topic)
+              --camera wrist:$(arg wrist_topic) $(arg teleop_flag) $(arg extra_args)" />
+</launch>

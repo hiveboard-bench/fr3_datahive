@@ -1,0 +1,50 @@
+<launch>
+  <arg name="bringup" default="true" />
+  <arg name="robot_ip" default="172.16.0.2" />
+  <arg name="robot" default="fr3" />
+  <arg name="arm_id" default="$(arg robot)" />
+  <arg name="cameras" default="true" />
+  <arg name="controller" default="fr3_cartesian_impedance_controller" />
+  <arg name="start_controller" default="true" />
+  <arg name="config" default="$(find fr3_teleop)/config/teleop.yaml" />
+  <arg name="mode" default="joystick" />
+  <arg name="source_args" default="" />
+  <arg name="with_orientation" default="true" />
+  <arg name="absolute_target" default="false" />
+  <arg name="auto_engage" default="false" />
+  <arg name="dry_run" default="false" />
+  <arg name="controller_check" default="true" />
+  <arg name="reanchor_nullspace" default="true" />
+
+  <arg name="gripper" default="true" />
+  <arg name="continuous_gripper" default="false" />
+  <arg name="extra_args" default="" />
+  <arg name="teleop_flags"
+    value="$(eval (' --with-orientation' if str(arg('with_orientation')).lower() in ('true', '1') else '')
+                   + (' --absolute-target' if str(arg('absolute_target')).lower() in ('true', '1') else '')
+                   + (' --auto-engage' if str(arg('auto_engage')).lower() in ('true', '1') else '')
+                   + (' --dry-run' if str(arg('dry_run')).lower() in ('true', '1') else '')
+                   + ('' if str(arg('gripper')).lower() in ('true', '1') else ' --no-gripper')
+                   + (' --continuous-gripper' if str(arg('continuous_gripper')).lower() in ('true', '1') else '')
+                   + ('' if str(arg('controller_check')).lower() in ('true', '1') else ' --no-controller-check')
+                   + ('' if str(arg('reanchor_nullspace')).lower() in ('true', '1') else ' --no-nullspace-reanchor'))" />
+
+
+  <include file="$(find fr3_control)/launch/impedance.launch" if="$(arg start_controller)">
+    <arg name="arm_id" value="$(arg arm_id)" />
+    <arg name="controller" value="$(arg controller)" />
+  </include>
+
+  <include file="$(find fr3_teleop)/launch/joystick.launch"
+    if="$(eval arg('mode') == 'joystick')">
+    <arg name="config" value="$(arg config)" />
+    <arg name="extra_args" value="$(arg source_args)" />
+  </include>
+
+  <node name="fr3_teleop" pkg="fr3_teleop" type="fr3_teleop.py" output="screen"
+    args="--config $(arg config)
+              --controller /$(arg controller)
+              --base-frame $(arg arm_id)_link0
+              $(arg teleop_flags)
+              $(arg extra_args)" />
+</launch>

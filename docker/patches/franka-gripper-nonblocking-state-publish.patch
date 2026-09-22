@@ -1,0 +1,19 @@
+diff --git a/franka_gripper/src/franka_gripper_node.cpp b/franka_gripper/src/franka_gripper_node.cpp
+index f129942..d86fc65 100644
+--- a/franka_gripper/src/franka_gripper_node.cpp
++++ b/franka_gripper/src/franka_gripper_node.cpp
+@@ -132,10 +132,12 @@ int main(int argc, char** argv) {
+   std::thread read_thread([&gripper_state, &gripper, &gripper_state_mutex]() {
+     ros::Rate read_rate(10);
+     while (ros::ok()) {
+-      {
++      franka::GripperState next_state;
++      if (updateGripperState(gripper, &next_state)) {
+         std::lock_guard<std::mutex> _(gripper_state_mutex);
+-        updateGripperState(gripper, &gripper_state);
++        gripper_state = next_state;
+       }
++
+       read_rate.sleep();
+     }
+   });

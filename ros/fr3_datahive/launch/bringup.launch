@@ -1,0 +1,28 @@
+<launch>
+  <arg name="robot_ip" default="172.16.0.2" />
+  <arg name="robot" default="fr3" />
+  <arg name="load_gripper" default="true" />
+  <arg name="cameras" default="true" />
+  <arg name="front_device" default="/dev/v4l/by-path/pci-0000:00:14.0-usb-0:5:1.0-video-index0" />
+  <arg name="top_device" default="/dev/v4l/by-path/pci-0000:00:14.0-usb-0:6:1.0-video-index0" />
+  <arg name="wrist_device" default="/dev/v4l/by-path/pci-0000:00:14.0-usb-0:7:1.3-video-index0" />
+  <arg name="collision_behavior" default="true" />
+  <arg name="motion_config" default="$(find fr3_datahive)/config/motion.yaml" />
+
+  <include file="$(find franka_control)/launch/franka_control.launch">
+    <arg name="robot_ip" value="$(arg robot_ip)" />
+    <arg name="robot" value="$(arg robot)" />
+    <arg name="load_gripper" value="$(arg load_gripper)" />
+  </include>
+
+  <node name="collision_behavior" pkg="fr3_datahive" type="collision_behavior.py" output="screen"
+    if="$(arg collision_behavior)">
+    <param name="config" value="$(arg motion_config)" />
+  </node>
+
+  <include file="$(find fr3_datahive)/launch/cameras.launch" if="$(arg cameras)">
+    <arg name="front_device" value="$(arg front_device)" />
+    <arg name="top_device" value="$(arg top_device)" />
+    <arg name="wrist_device" value="$(arg wrist_device)" />
+  </include>
+</launch>

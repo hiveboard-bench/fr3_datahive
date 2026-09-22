@@ -1,0 +1,34 @@
+<launch>
+  <arg name="front_device" default="/dev/v4l/by-path/pci-0000:00:14.0-usb-0:5:1.0-video-index0" />
+  <arg name="top_device" default="/dev/v4l/by-path/pci-0000:00:14.0-usb-0:6:1.0-video-index0" />
+  <arg name="wrist_device" default="/dev/v4l/by-path/pci-0000:00:14.0-usb-0:7:1.3-video-index0" />
+  <arg name="front_topic" default="/camera/front/image_raw" />
+  <arg name="top_topic" default="/camera/top/image_raw" />
+  <arg name="wrist_topic" default="/camera/wrist/image_raw" />
+
+  <arg name="width" default="2560" doc="ZED side-by-side capture width" />
+  <arg name="height" default="720" />
+  <arg name="fps" default="30.0" />
+  <arg name="output_width" default="640" />
+  <arg name="output_height" default="480" />
+  <arg name="wrist_width" default="640" />
+  <arg name="wrist_height" default="480" />
+
+  <node name="zed_front" pkg="fr3_datahive" type="uvc_camera.py" output="screen"
+        unless="$(eval not arg('front_device'))"
+        args="--device $(arg front_device) --topic $(arg front_topic) --frame-id zed_front
+              --stereo-side-by-side --width $(arg width) --height $(arg height) --fps $(arg fps)
+              --output-width $(arg output_width) --output-height $(arg output_height)" />
+
+  <node name="zed_top" pkg="fr3_datahive" type="uvc_camera.py" output="screen"
+        unless="$(eval not arg('top_device'))"
+        args="--device $(arg top_device) --topic $(arg top_topic) --frame-id zed_top
+              --stereo-side-by-side --width $(arg width) --height $(arg height) --fps $(arg fps)
+              --output-width $(arg output_width) --output-height $(arg output_height)" />
+
+  <node name="realsense_wrist" pkg="fr3_datahive" type="uvc_camera.py" output="screen"
+        unless="$(eval not arg('wrist_device'))"
+        args="--device $(arg wrist_device) --topic $(arg wrist_topic) --frame-id realsense_wrist
+              --width $(arg wrist_width) --height $(arg wrist_height) --fps 30
+              --output-width $(arg wrist_width) --output-height $(arg wrist_height)" />
+</launch>

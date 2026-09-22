@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>fr3_datahive</name>
+  <version>0.1.0</version>
+  <description>Collect FR3 episodes for DataHive, manually or automatically.</description>
+  <maintainer email="matheuzu11@gmail.com">math</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <exec_depend>rospy</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+  <exec_depend>franka_msgs</exec_depend>
+  <exec_depend>franka_control</exec_depend>
+  <exec_depend>franka_gripper</exec_depend>
+  <exec_depend>actionlib</exec_depend>
+  <exec_depend>control_msgs</exec_depend>
+  <exec_depend>trajectory_msgs</exec_depend>
+  <exec_depend>controller_manager</exec_depend>
+  <exec_depend>rospkg</exec_depend>
+</package>

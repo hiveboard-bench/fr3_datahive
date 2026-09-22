@@ -1,0 +1,14 @@
+<library path="lib/libfr3_control">
+  <class name="fr3_control/CartesianImpedanceController"
+         type="fr3_control::CartesianImpedanceController"
+         base_class_type="controller_interface::ControllerBase">
+    <description>
+      Cartesian impedance controller for the FR3, forked from
+      serl_franka_controllers. Clips the pose error before it becomes torque, so
+      the contact force ceiling is stiffness x clip and is set independently of
+      tracking stiffness. Adds an independent setpoint filter, absolute (non
+      multiplying) nullspace gains, a nullspace re-anchor service, and publishers
+      for the commanded setpoint and the pre-clip pose error.
+    </description>
+  </class>
+</library>

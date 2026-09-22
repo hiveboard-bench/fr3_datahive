@@ -1,0 +1,7 @@
+samples
+recordings
+datahive-config
+tests
+__pycache__
+*.py[cod]
+.pytest_cache

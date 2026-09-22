@@ -1,0 +1,39 @@
+<launch>
+  <arg name="mode" default="manual" doc="recording mode: manual | auto" />
+  <arg name="teleop" default="joystick" doc="joystick | none (controller only)" />
+  <arg name="robot_ip" default="172.16.0.2" />
+  <arg name="robot" default="fr3" />
+  <arg name="cameras" default="true" />
+  <arg name="front_device" default="/dev/v4l/by-path/pci-0000:00:14.0-usb-0:5:1.0-video-index0" />
+  <arg name="top_device" default="/dev/v4l/by-path/pci-0000:00:14.0-usb-0:6:1.0-video-index0" />
+  <arg name="wrist_device" default="/dev/v4l/by-path/pci-0000:00:14.0-usb-0:7:1.3-video-index0" />
+  <arg name="samples_dir" default="/data/samples" />
+  <arg name="out_dir" default="/data/recordings" />
+  <arg name="base_url" default="http://127.0.0.1:8000" />
+  <arg name="teleop_actions" default="true" doc="record the teleop command as the action" />
+  <arg name="extra_args" default="" />
+
+  <include file="$(find fr3_datahive)/launch/bringup.launch">
+    <arg name="robot_ip" value="$(arg robot_ip)" />
+    <arg name="robot" value="$(arg robot)" />
+    <arg name="cameras" value="$(arg cameras)" />
+    <arg name="front_device" value="$(arg front_device)" />
+    <arg name="top_device" value="$(arg top_device)" />
+    <arg name="wrist_device" value="$(arg wrist_device)" />
+  </include>
+
+  <include file="$(find fr3_teleop)/launch/teleop.launch">
+    <arg name="bringup" value="false" />
+    <arg name="arm_id" value="$(arg robot)" />
+    <arg name="mode" value="$(arg teleop)" />
+  </include>
+
+  <include file="$(find fr3_datahive)/launch/record.launch">
+    <arg name="mode" value="$(arg mode)" />
+    <arg name="samples_dir" value="$(arg samples_dir)" />
+    <arg name="out_dir" value="$(arg out_dir)" />
+    <arg name="base_url" value="$(arg base_url)" />
+    <arg name="teleop_actions" value="$(arg teleop_actions)" />
+    <arg name="extra_args" value="--wait-timeout 90 $(arg extra_args)" />
+  </include>
+</launch>

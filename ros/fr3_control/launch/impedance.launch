@@ -1,0 +1,25 @@
+<launch>
+  <arg name="arm_id" default="fr3" />
+  <arg name="controller" default="fr3_cartesian_impedance_controller" />
+  <arg name="translational_stiffness" default="1000.0" />
+  <arg name="translational_damping" default="89.0" />
+  <arg name="rotational_stiffness" default="75.0" />
+  <arg name="rotational_damping" default="7.0" />
+  <arg name="setpoint_filter" default="0.005" />
+  <arg name="gain_filter" default="0.005" />
+
+  <group ns="$(arg controller)dynamic_reconfigure_compliance_param_node">
+    <param name="translational_stiffness" value="$(arg translational_stiffness)" />
+    <param name="translational_damping" value="$(arg translational_damping)" />
+    <param name="rotational_stiffness" value="$(arg rotational_stiffness)" />
+    <param name="rotational_damping" value="$(arg rotational_damping)" />
+    <param name="setpoint_filter" value="$(arg setpoint_filter)" />
+    <param name="gain_filter" value="$(arg gain_filter)" />
+  </group>
+
+  <rosparam command="load" subst_value="true"
+    file="$(find fr3_control)/config/fr3_controllers.yaml" />
+
+  <node name="fr3_control_spawner" pkg="controller_manager" type="spawner"
+    respawn="false" output="screen" args="$(arg controller)" />
+</launch>

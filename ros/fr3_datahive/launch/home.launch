@@ -1,0 +1,16 @@
+<launch>
+  <arg name="config" default="$(find fr3_datahive)/config/motion.yaml" />
+  <arg name="pose" default="home" />
+  <arg name="duration" default="0.0" />
+  <arg name="confirm" default="true" />
+
+  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+    output="screen" args="position_joint_trajectory_controller" />
+  <node name="home_position" pkg="fr3_datahive" type="home_position.py" output="screen"
+    required="true">
+    <param name="config" value="$(arg config)" />
+    <param name="pose" value="$(arg pose)" />
+    <param name="duration" value="$(arg duration)" />
+    <param name="confirm" value="$(arg confirm)" />
+  </node>
+</launch>

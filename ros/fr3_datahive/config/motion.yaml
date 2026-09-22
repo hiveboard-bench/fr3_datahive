@@ -1,0 +1,56 @@
+collision_behavior:
+  # Nominal thresholds for the firmware collision reflex. The upper arrays stop
+  # the arm and latch robot_mode 4; the lower ones only raise the contact flags
+  # in FrankaState. franka_ros ships 20 N and 20 Nm, which ordinary teleop
+  # passes on contact or when the impedance target runs ahead of the arm.
+  # Raise these in steps and re-test; a higher threshold means the arm pushes
+  # harder before it decides something is wrong.
+  service_timeout: 15.0
+
+  # The firmware applies the acceleration arrays while the arm is accelerating
+  # or decelerating and the nominal arrays the rest of the time. Teleop spends
+  # most of its motion in the former, so raising only the nominal ones leaves
+  # the reflex tripping exactly as before.
+
+  # Per-joint torque, ordered fr3_joint1 through fr3_joint7, in Nm. The FR3
+  # produces 87 Nm on joints 1-4 and 12 Nm on 5-7, so the wrist values are left
+  # at the franka_ros defaults; there is no headroom to raise them into.
+  lower_torque_thresholds_acceleration: [40.0, 40.0, 36.0, 36.0, 16.0, 14.0, 12.0]
+  upper_torque_thresholds_acceleration: [40.0, 40.0, 36.0, 36.0, 16.0, 14.0, 12.0]
+  lower_torque_thresholds_nominal: [40.0, 40.0, 36.0, 36.0, 16.0, 14.0, 12.0]
+  upper_torque_thresholds_nominal: [40.0, 40.0, 36.0, 36.0, 16.0, 14.0, 12.0]
+
+  # End-effector wrench as [Fx, Fy, Fz, Mx, My, Mz], in N and Nm.
+  lower_force_thresholds_acceleration: [50.0, 50.0, 50.0, 30.0, 30.0, 30.0]
+  upper_force_thresholds_acceleration: [50.0, 50.0, 50.0, 30.0, 30.0, 30.0]
+  lower_force_thresholds_nominal: [50.0, 50.0, 50.0, 30.0, 30.0, 30.0]
+  upper_force_thresholds_nominal: [50.0, 50.0, 50.0, 30.0, 30.0, 30.0]
+
+home_position:
+  # The FR3 arm joints are numbered 1 through 7.
+  joint_count: 7
+
+  # ROS interfaces provided by the position trajectory controller.
+  action_namespace: /position_joint_trajectory_controller/follow_joint_trajectory
+  joint_state_topic: /joint_states
+
+  # Maximum waits for the initial joint state and trajectory action server.
+  state_timeout: 5.0
+  action_server_timeout: 10.0
+  # Extra time beyond the planned trajectory duration before cancelling its goal.
+  result_timeout_padding: 5.0
+
+  # Keep targets this many radians inside the limits from franka_description.
+  limit_margin: 0.05
+  # Cap each joint at this fraction of its configured velocity limit.
+  speed_fraction: 0.2
+  # Lower bound for an automatically calculated move duration, in seconds.
+  minimum_duration: 3.0
+  # Time assigned to the initial hold point before motion begins, in seconds.
+  settle_duration: 1.0
+
+  # Pose used when the launch argument does not override it.
+  default_pose: home
+  # Joint targets are in radians, ordered fr3_joint1 through fr3_joint7.
+  poses:
+    home: [0.0, -0.7853981634, 0.0, -2.3561944902, 0.0, 1.5707963268, 0.7853981634]

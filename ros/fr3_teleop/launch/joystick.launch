@@ -1,0 +1,7 @@
+<launch>
+     <arg name="config" default="$(find fr3_teleop)/config/teleop.yaml" />
+     <arg name="extra_args" default="" />
+
+     <node name="joystick_teleop" pkg="fr3_teleop" type="joystick_teleop.py" output="screen"
+          args="--config $(arg config) $(arg extra_args)" />
+</launch>

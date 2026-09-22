@@ -1,0 +1,100 @@
+controller:
+  # Robot state input and Cartesian impedance command interface.
+  franka_state_topic: /franka_state_controller/franka_states
+  namespace: /fr3_cartesian_impedance_controller
+  base_frame: fr3_link0
+
+  # Command loop frequency, in Hz.
+  rate: 50.0
+  # Coarse and fine ratios applied to displacement from the engagement point.
+  scale: 1.0
+  fine_scale: 0.15
+  # Maximum translation per nominal update, in metres.
+  max_step: 0.005
+  # Maximum orientation change per nominal update, in degrees.
+  max_slew_deg: 2.0
+  # Time constant of the first-order target-position follower, in seconds.
+  follower_time_constant: 0.04
+  # Ignore filtered translation steps smaller than this distance, in metres.
+  threshold: 0.
+  # Hold position when the target or robot state is older than this many seconds.
+  timeout: 0.3
+  # URDF parameter the joint travel limits are read from.
+  robot_description: /robot_description
+  # Warn when a joint comes within this many radians of either travel limit.
+  # Advisory only: nothing acts on the robot, so the recorded actions stay a
+  # faithful record of what the operator asked for. 0 disables the warning.
+  joint_warn_margin: 0.15
+  # Warn when joint speed or torque passes this fraction of its URDF limit. Both
+  # are per joint and far from uniform: effort is 87 Nm on joints 1-4 but only
+  # 12 Nm on the wrist, and velocity ranges 1.0 to 3.0 rad/s.
+  joint_warn_fraction: 0.8
+
+  # Franka Hand widths and motion settings. Widths are in metres.
+  gripper:
+    max_width: 0.08
+    # Normalized input thresholds use hysteresis to prevent command chatter.
+    close_at: 0.35
+    open_at: 0.65
+    # Grasp goal width in metres and force in newtons.
+    grasp_width: 0.0
+    grasp_force: 20.0
+    # Symmetric inner and outer grasp tolerance, in metres.
+    grasp_epsilon: 0.08
+    # Finger motion speed in metres per second.
+    speed: 0.1
+    # Minimum interval between gripper action goals, in seconds.
+    command_interval: 0.3
+    # Minimum width change in continuous mode, in metres.
+    deadband: 0.005
+
+# 8BitDo Ultimate 2C mapping in Bluetooth/DInput mode. Sticks control Cartesian
+# translation and tool roll/pitch; RT/RB yaw either the gripper orientation or
+# the complete target about the robot base. The 2.4 GHz dongle uses a different XInput map.
+#
+# Linux Bluetooth HID layout: axes 0/1 are the left stick, 2/3 the right stick,
+# 4 is RT, and 5 is LT. Buttons are A/B 0/1, X 3, LB/RB 6/7,
+# Back/Start 10/11, and L3 13.
+joystick:
+  # The paired Bluetooth controller is connected as this joydev device.
+  device: /dev/input/js0
+  name_match: 8BitDo
+  rate: 50.0
+  # Frame assigned to the integrated target pose.
+  frame_id: joystick
+  # Translation: left stick, plus the left trigger/bumper for height.
+  axis_x: "-1"          # left stick, vertical
+  axis_y: "-0"          # left stick, horizontal
+  axis_z: "-5"          # LT -> down
+  z_up_button: 6        # LB -> up
+  # Tool roll/pitch on the right stick. RT/RB yaw the gripper by default; Y
+  # toggles them between gripper yaw and whole-target orbit about base Z.
+  axis_roll: "2"        # right stick, horizontal
+  axis_pitch: "-3"      # right stick, vertical
+  axis_yaw: "-4"        # RT -> yaw clockwise
+  yaw_ccw_button: 7     # RB -> yaw counter-clockwise
+  yaw_mode_button: 4    # Y -> toggle gripper/base yaw
+  # Raw trigger value at rest; full press is normalized to +1.
+  trigger_rest: -1.0
+  close_button: 0       # A
+  open_button: 1        # B
+  # Run a session without a second terminal. null disables any of these.
+  engage_button: 11     # Start
+  disengage_button: 10  # Back
+  scale_button: 13      # L3 -> /teleop/toggle_scale
+  record_button: 2      # Button 2 -> /teleop/record_trigger (Start/Stop episode)
+  home_button: 3         # Hold X to run the configured joint-space home move
+  home_hold_seconds: 2.0
+  # Stick radial deadzone and response-curve exponent.
+  deadzone: 0.08
+  curve: 1.2
+  # Ignore this fraction of trigger travel above its rest value.
+  trigger_deadzone: 0.06
+  # Maximum planar, vertical, and angular target rates.
+  linear_speed: 0.15
+  vertical_speed: 0.08
+  angular_speed_deg: 40.0
+  # null allows motion without holding a deadman button.
+  deadman_button: null
+  # Seconds without input events before holding; 0 disables the watchdog.
+  input_timeout: 0.0

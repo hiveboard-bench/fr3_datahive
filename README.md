@@ -100,12 +100,14 @@ Then annotate, `datahive validate` and `datahive upload` as usual (from the GUI,
 
 | Field | Source |
 |---|---|
-| `proprioception/joint_position` (7) | `FrankaState.q` |
-| `joint_velocity` (7) | `FrankaState.dq` (marked `estimated`, the controller filters it) |
-| `joint_torque_or_current` (7) | `FrankaState.tau_J` |
-| `ee_pose` (7) | `O_T_EE` as `x y z qx qy qz qw` (marked `estimated`, computed from the joints) |
-| `ee_state` (1) | total finger opening (m) from `/franka_gripper/joint_states` |
-| `commands/target` | in `action_space` order: Cartesian pose (7) + gripper (1) |
+| `observations/robot_states/joint_position` (7) | `FrankaState.q` |
+| `observations/robot_states/joint_velocity` (7) | `FrankaState.dq` (marked `estimated`, the controller filters it) |
+| `observations/robot_states/joint_torque_or_current` (7) | `FrankaState.tau_J` |
+| `observations/robot_states/ee_pose` (7) | `O_T_EE` as `x y z qx qy qz qw` (marked `estimated`, computed from the joints) |
+| `observations/robot_states/ee_state` (1) | total finger opening (m) from `/franka_gripper/joint_states` |
+| `actions/cartesian_position` (7) | commanded Cartesian pose, from teleop when enabled or `O_T_EE_d` otherwise |
+| `actions/gripper_position` (1) | commanded gripper width (m) |
+| `observations/video_paths/<camera>` | relative filename of that camera's recorded MP4 |
 | videos | one H.264 mp4 per camera, 30 fps, written with ffmpeg |
 
 Provenance labels live in `src/fr3_datahive/convert.py`. Change `action_space` in the profile to
@@ -144,7 +146,8 @@ fr3_datahive/
 ```
 
 The recorder runs under a Python 3.10 venv (`/opt/datahive-venv`) because `datahive-tools` needs
-3.10 and Noetic ships 3.8. It borrows the pure-Python ROS packages (`rospy`, message types) and
+3.10 and Noetic ships 3.8. It requires `datahive-tools` 0.1.7 or newer for the current HDF5
+layout. It borrows the pure-Python ROS packages (`rospy`, message types) and
 decodes images itself, so `cv_bridge` is not used.
 
 ## Customising
@@ -161,7 +164,7 @@ decodes images itself, so `cv_bridge` is not used.
 ## Development
 
 ```bash
-pip install "datahive-tools[video]" pytest
+pip install "datahive-tools[video]>=0.1.7" pytest
 pytest tests
 ```
 

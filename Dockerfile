@@ -168,7 +168,7 @@ RUN source "/opt/ros/${ROS_DISTRO}/setup.bash" \
     && catkin build --no-status \
     && catkin clean --logs --yes >/dev/null
 
-ARG DATAHIVE_SPEC="datahive-tools[video]"
+ARG DATAHIVE_SPEC="datahive-tools[video]>=0.1.7"
 ENV UV_PYTHON_INSTALL_DIR=/opt/python
 RUN python3 -m pip install uv \
     && uv python install 3.10 \

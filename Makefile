@@ -20,7 +20,7 @@
 IMAGE     ?= fr3-datahive:noetic
 CONTAINER ?= fr3-datahive
 PORT      ?= 8000
-DATAHIVE_SPEC ?= datahive-tools[video]
+DATAHIVE_SPEC ?= datahive-tools[video]>=0.1.7
 HERE      := $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 
 HOST_DIRS := $(HERE)/samples $(HERE)/recordings $(HERE)/datahive-config
